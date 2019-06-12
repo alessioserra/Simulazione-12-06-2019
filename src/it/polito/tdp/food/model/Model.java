@@ -94,16 +94,13 @@ public class Model {
 		//CONDIZIONE FINALE
 		if ( getCalorie(parziale) > getCalorie(this.best)) {
 			this.best = new ArrayList<Condiment>(parziale);
-			return;
 		}
 		
 		//CASO INTERMEDIO
 		for (Condiment c1 : this.ingredienti) {
-			List<Condiment> parziale2 = new ArrayList<>(parziale);
-			
-			for (Condiment c2 : parziale2) {
+			for (Condiment c2 : this.ingredienti) {
 				
-				if ( !Graphs.neighborListOf(this.grafo, c1).contains(c2)) {
+				if ( !Graphs.neighborListOf(this.grafo, c1).contains(c2) ) {
 					
 				parziale.add(c2);
 				sub_ricorsione(parziale);
