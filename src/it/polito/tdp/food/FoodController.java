@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 public class FoodController {
@@ -34,6 +35,9 @@ public class FoodController {
 
     @FXML // fx:id="boxIngrediente"
     private ComboBox<Condiment> boxIngrediente; // Value injected by FXMLLoader
+    
+    @FXML
+    private TextArea txtResult;
 
     @FXML // fx:id="btnDietaEquilibrata"
     private Button btnDietaEquilibrata; // Value injected by FXMLLoader
@@ -57,7 +61,7 @@ public class FoodController {
     	model.creaGrafo();
     	
     	for (Condiment c : ingredienti) {
-    		System.out.println(c+" numero di cibi: "+model.getGradoNodo(c) );		
+    		txtResult.appendText(c+" numero di cibi: "+model.getGradoNodo(c)+"\n");		
     	}
     	
     	}catch (NumberFormatException e) {
@@ -72,6 +76,7 @@ public class FoodController {
         assert btnCreaGrafo != null : "fx:id=\"btnCreaGrafo\" was not injected: check your FXML file 'Food.fxml'.";
         assert boxIngrediente != null : "fx:id=\"boxIngrediente\" was not injected: check your FXML file 'Food.fxml'.";
         assert btnDietaEquilibrata != null : "fx:id=\"btnDietaEquilibrata\" was not injected: check your FXML file 'Food.fxml'.";
+        assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Food.fxml'.";
     }
     
     public void setModel(Model model) {
