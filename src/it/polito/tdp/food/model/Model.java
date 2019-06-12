@@ -21,9 +21,13 @@ public class Model {
 	List<Condiment> ingredienti;
 	Map<Integer, Condiment> idMap;
 	
+	//Ricorsione
+	List<Condiment> best;
+	
 	
 	public Model() {
 		dao = new FoodDao();
+		best = new ArrayList<Condiment>();
 	}
 	public List<Condiment> listAllCondiment(double calorie){
 		
@@ -71,6 +75,58 @@ public class Model {
 		}
 		
 		return risultato;
+	}
+	
+	
+	public List<Condiment> ricorsione(Condiment iniziale){
+		
+		List<Condiment> parziale = new ArrayList<Condiment>();
+		//Aggiungo l'ingrediente iniziale
+		parziale.add(iniziale);
+		
+		sub_ricorsione(parziale);
+		
+		return this.best;
+	}
+	
+	public void sub_ricorsione(List<Condiment> parziale) {
+		
+		//CONDIZIONE FINALE
+		if ( getCalorie(parziale) > getCalorie(this.best)) {
+			this.best = new ArrayList<Condiment>(parziale);
+			return;
+		}
+		
+		//CASO INTERMEDIO
+		for (Condiment c1 : this.ingredienti) {
+			List<Condiment> parziale2 = new ArrayList<>(parziale);
+			
+			for (Condiment c2 : parziale2) {
+				
+				if ( !Graphs.neighborListOf(this.grafo, c1).contains(c2)) {
+					
+				parziale.add(c2);
+				sub_ricorsione(parziale);
+				parziale.remove(parziale.size()-1);
+				
+				}
+				else return;
+			}
+		}
+		
+		
+	}
+	
+	public double getCalorie(List<Condiment> listaC) {
+		
+		double res=0.0;
+		
+		//Primo ciclo
+		if (listaC.size()>0) {
+		for(Condiment c : listaC) res = res + c.getCondiment_calories();	
+		}	
+		
+		return res;
 	}
 	
 }

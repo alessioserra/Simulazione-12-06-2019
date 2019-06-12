@@ -44,6 +44,14 @@ public class FoodController {
 
     @FXML
     void doCalcolaDieta(ActionEvent event) {
+    	
+    	txtResult.clear();
+    	
+    	Condiment ingrediente = boxIngrediente.getValue();
+    	
+    	List<Condiment> result = model.ricorsione(ingrediente);
+    	
+    	for (Condiment c : result) txtResult.appendText(c+"\n");
 
     }
 
