@@ -5,6 +5,7 @@
 package it.polito.tdp.food;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -50,9 +51,15 @@ public class FoodController {
     	Condiment ingrediente = boxIngrediente.getValue();
     	
     	List<Condiment> result = model.ricorsione(ingrediente);
+    	Collections.sort(result);
     	
     	for (Condiment c : result) txtResult.appendText(c+"\n");
-
+    	
+    	//Calorie totali
+    	double tot = 0.0;
+    	for (Condiment c : result) tot = tot + c.getCondiment_calories(); 	
+    	txtResult.appendText("\nCalorie totali: "+tot+" kCal");
+    	
     }
 
     @FXML
