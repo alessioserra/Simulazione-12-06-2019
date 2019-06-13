@@ -11,6 +11,8 @@ import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
+import com.zaxxer.hikari.metrics.dropwizard.CodahaleHealthChecker;
+
 import it.polito.tdp.food.db.Condiment;
 import it.polito.tdp.food.db.FoodDao;
 
@@ -66,6 +68,11 @@ public class Model {
 		System.out.println("#ARCHI: "+grafo.edgeSet().size());
 	}
 	
+	/**
+	 * Calocolo il numero di cibi in cui compare l'ingrediente
+	 * @param c
+	 * @return
+	 */
 	public int getGradoNodo(Condiment c) {		
 		
 		int risultato = 0;
@@ -80,12 +87,18 @@ public class Model {
 	
 	public List<Condiment> ricorsione(Condiment iniziale){
 		
+		//Inizializzo liste per ricorsioni successive
 		List<Condiment> parziale = new ArrayList<Condiment>();
+		best = new ArrayList<>();
+		
 		//Aggiungo l'ingrediente iniziale
+		best.add(iniziale);
 		parziale.add(iniziale);
 		
+		//Avvio sotto ricorsione
 		sub_ricorsione(parziale);
 		
+		//Risultato
 		return this.best;
 	}
 	
@@ -97,29 +110,44 @@ public class Model {
 		}
 		
 		//CASO INTERMEDIO
-		for (Condiment c1 : this.ingredienti) {
-			for (Condiment c2 : this.ingredienti) {
+		for (Condiment c1 : this.ingredienti) {	
+			
+			//Clono per non ciclare sulla lista stessa
+			List<Condiment> parziale2 = new ArrayList<>(parziale);
+			
+			for (Condiment c2 : parziale2) {
 				
-				if ( !Graphs.neighborListOf(this.grafo, c1).contains(c2) ) {
-					
-				parziale.add(c2);
-				sub_ricorsione(parziale);
-				parziale.remove(parziale.size()-1);
-				
+				//Oggetti diversi --- //Non deve essere contenuto nella lista dei vicini --- //Il parziale non deve già contenere il condimento
+ 				if (!c1.equals(c2) && !Graphs.neighborListOf(this.grafo, c2).contains(c1) && !parziale.contains(c1)) {
+ 					
+					//Aggiungo
+ 					parziale.add(c1);
+ 					//Ricorsione
+					sub_ricorsione(parziale);
+					//Backtracking
+					parziale.remove(parziale.size()-1);
 				}
+				
+ 				//Altrimenti esco
 				else return;
 			}
+			
 		}
-		
-		
 	}
 	
+	/**
+	 * Metodo per calcolare il totale delle calorie della lista passata
+	 * @param listaC
+	 * @return TOT calorie della lista
+	 */
 	public double getCalorie(List<Condiment> listaC) {
 		
 		double res=0.0;
 		
 		//Primo ciclo
 		if (listaC.size()>0) {
+		
+		//Calcolo totale delle calorie 
 		for(Condiment c : listaC) res = res + c.getCondiment_calories();	
 		}	
 		
